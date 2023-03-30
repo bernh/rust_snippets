@@ -1,7 +1,14 @@
 mod measure;
 
+use measure::Measurements;
+
 fn main() {
-    measure::set_measurement(1, 2, 3);
-    measure::set_measurement(2, 5, 5);
-    measure::print_measurements();
+    let mut mes = Measurements::init();
+
+    mes.set(1, 2, 3);
+    mes.set(2, 5, 5);
+    mes.print();
+
+    measure::set_measurement(&mut mes, 0, 7, 7);
+    mes.print();
 }

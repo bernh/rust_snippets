@@ -1,4 +1,4 @@
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 struct Measurement {
     x: i32,
     y: i32,
@@ -6,36 +6,33 @@ struct Measurement {
 
 const NUM_MEASUREMENTS: usize = 3;
 
-static mut measurements: [Measurement; NUM_MEASUREMENTS] =
-    [Measurement { x: 0, y: 0 }; NUM_MEASUREMENTS]; // initialization enforced!
-
-pub fn set_measurement(offset: usize, x: i32, y: i32) -> () {
-    let p: Measurement = Measurement { x, y };
-    unsafe {
-        measurements[offset] = p;
-    }
+#[derive(Debug)]
+pub struct Measurements {
+    m: [Measurement; NUM_MEASUREMENTS],
 }
 
-pub fn print_measurements() -> () {
-    unsafe {
-        for item in measurements.into_iter().enumerate() {
-            let (i, p): (usize, Measurement) = item;
-            println!("Measurement {}: ({},{})", i + 1, p.x, p.y);
+impl Measurements {
+    pub fn init() -> Self {
+        let m = [Measurement { x: 0, y: 0 }; NUM_MEASUREMENTS];
+        Self { m }
+    }
+
+    pub fn set(&mut self, offset: usize, x: i32, y: i32) {
+        let p: Measurement = Measurement { x, y };
+        if offset < self.m.len() {
+            self.m[offset] = p;
         }
     }
+
+    pub fn print(&self) -> () {
+        println!("{:?}", self);
+    }
 }
 
-// mutable global state is an anti-pattern in Rust. You are basically forced to either
-// - take care of synchronisation (Arc, Mutex, once_cell, ...)
-// - or use "unsafe" to ignore all warnings
-
-// Alternative version with same bug as C version (not ideomatic Rust!)
-// for i in 0..4 {
-//     let p = measurements[i];
-//     println!("Measurement {}: ({},{})", i + 1, p.x, p.y);
-// }
-// Prints:
-// Measurement 1: (0,0)
-// Measurement 2: (2,3)
-// Measurement 3: (5,5)
-// thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 3', src/snippet_1.rs:29:17
+// alternative version if we prefer a "functional" style
+pub fn set_measurement(mes: &mut Measurements, offset: usize, x: i32, y: i32) -> () {
+    let p: Measurement = Measurement { x, y };
+    if offset < mes.m.len() {
+        mes.m[offset] = p;
+    }
+}
