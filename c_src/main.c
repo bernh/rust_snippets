@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-#include "snippet_1.h"
+#include "measure.h"
 
 int main(int argc, char** argv) {
   // snippet_1
-  set_point(1, 2, 3);  // XXX no module system, where is set_point defined?
-  set_point(2, 5, 5);
-  print_points();
+  set_measurement(1, 2, 3);  // XXX no module system, where is set_point defined?
+  set_measurement(2, 5, 5);
+  print_measurements();
 }
 
 /* compiles without warning! Prints:

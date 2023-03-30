@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "-g -Wall")
 # set up source files to be tested and build library
 set(c_srcs 
   c_src/main.c
-  c_src/snippet_1.c
+  c_src/measure.c
 )
 include_directories(c_src)
 add_executable(c ${c_srcs})
