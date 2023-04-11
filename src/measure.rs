@@ -1,3 +1,5 @@
+use std::sync::Mutex;
+
 #[derive(Clone, Copy)]
 struct Measurement {
     x: i32,
@@ -6,22 +8,20 @@ struct Measurement {
 
 const NUM_MEASUREMENTS: usize = 3;
 
-static mut measurements: [Measurement; NUM_MEASUREMENTS] =
-    [Measurement { x: 0, y: 0 }; NUM_MEASUREMENTS]; // initialization enforced!
+static measurements: Mutex<[Measurement; NUM_MEASUREMENTS]> =
+    Mutex::new([Measurement { x: 0, y: 0 }; NUM_MEASUREMENTS]);
 
 pub fn set_measurement(offset: usize, x: i32, y: i32) -> () {
     let p: Measurement = Measurement { x, y };
-    unsafe {
-        measurements[offset] = p;
-    }
+    let mut data = measurements.lock().unwrap();
+    data[offset] = p;
+    // unlock called automatically when data goes out of scope}
 }
 
 pub fn print_measurements() -> () {
-    unsafe {
-        for item in measurements.into_iter().enumerate() {
-            let (i, p): (usize, Measurement) = item;
-            println!("Measurement {}: ({},{})", i + 1, p.x, p.y);
-        }
+    for item in measurements.lock().unwrap().into_iter().enumerate() {
+        let (i, p): (usize, Measurement) = item;
+        println!("Measurement {}: ({},{})", i + 1, p.x, p.y);
     }
 }
 
