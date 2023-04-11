@@ -19,9 +19,8 @@ pub fn set_measurement(offset: usize, x: i32, y: i32) -> () {
 }
 
 pub fn print_measurements() -> () {
-    for item in measurements.lock().unwrap().into_iter().enumerate() {
-        let (i, p): (usize, Measurement) = item;
-        println!("Measurement {}: ({},{})", i + 1, p.x, p.y);
+    for (i, mes) in measurements.lock().unwrap().into_iter().enumerate() {
+        println!("Measurement {}: ({},{})", i + 1, mes.x, mes.y);
     }
 }
 
