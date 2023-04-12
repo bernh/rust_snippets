@@ -2,8 +2,6 @@
 mod measure;
 mod measure_impl;
 
-use measure::Measurements;
-
 fn main() {
     // module level global variable and functions
     measure::set_measurement(1, 2, 3);
